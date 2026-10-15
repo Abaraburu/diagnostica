@@ -1,0 +1,26 @@
+smartmontools 7.5 (smartctl.exe, drivedb.h)
+============================================
+
+Copyright (C) 2002-25 Bruce Allen, Christian Franke e gli altri autori
+di smartmontools (www.smartmontools.org).
+
+smartmontools è software libero distribuito con licenza
+GNU General Public License versione 2 (GPLv2). Il testo completo della
+licenza si trova nel file smartmontools-COPYING.txt.
+
+Diagnostica Hardware include smartctl.exe e drivedb.h NON MODIFICATI,
+presi dal pacchetto ufficiale per Windows "smartmontools-7.5.win32-setup.exe".
+Diagnostica Hardware avvia smartctl.exe come programma separato e ne legge
+l'output; non è collegato (linked) al suo codice.
+
+Codice sorgente corrispondente (versione 7.5, tag RELEASE_7_5):
+  https://github.com/smartmontools/smartmontools/releases/tag/RELEASE_7_5
+Progetto:
+  https://github.com/smartmontools/smartmontools
+  https://www.smartmontools.org
+
+Se il link non fosse più raggiungibile, è possibile richiedere una copia
+del codice sorgente a chi ha distribuito questo pacchetto.
+
+Questo programma è distribuito SENZA ALCUNA GARANZIA, come indicato nella
+licenza GPLv2.

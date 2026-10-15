@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diagnostica Hardware</title>
+  <meta name="description" content="Programma gratuito e portatile per controllare lo stato di un PC Windows in circa 10 minuti: dischi, processore, RAM, scheda video, alimentazione e storico errori. Nessuna installazione, sola lettura, nessuna connessione a Internet.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="currentColor"/><path d="M5 17h5l3-7 5 13 3-6h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 4v4h4"/><path d="M12 8v4.5l3 2"/></symbol>
+    <symbol id="i-disk" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="12" cy="11" r="4"/><circle cx="12" cy="11" r="0.6"/><path d="M7 17.5h2"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.2"/><path d="M6.5 11.5l1 .8M12 8v1.3M17.5 11.5l-1 .8"/></symbol>
+    <symbol id="i-ram" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="9" rx="1.5"/><path d="M6 10v3M10 10v3M14 10v3M18 10v3M5 16v2M9 16v2M15 16v2M19 16v2"/></symbol>
+    <symbol id="i-gpu" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="11" rx="2"/><circle cx="9" cy="11.5" r="3"/><path d="M15 9.5h3.5M15 12h3.5M15 14.5h3.5M5 17v2.5h6V17"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5 5 13.5h6l-1 8 8-11h-6l1-8z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l8.5-8.5M16 7l2.5 2.5M14 9l2 2"/></symbol>
+    <symbol id="i-usb" viewBox="0 0 24 24"><rect x="7" y="9" width="10" height="13" rx="2"/><path d="M9 9V3h6v6M10.5 5.5h0M13.5 5.5h0"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r="0.8"/><path d="M3 3l18 18"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v12M7 11l5 5 5-5M4.5 20.5h15"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2"/><path d="M15.5 8.5V5a1.5 1.5 0 0 0-1.5-1.5H5A1.5 1.5 0 0 0 3.5 5v9A1.5 1.5 0 0 0 5 15.5h3.5"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#contenuto">Vai al contenuto</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Diagnostica Hardware, inizio pagina">
+      <svg class="brand-mark" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span>Diagnostica Hardware</span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#funzioni">Funzioni</a>
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#controlli">Cosa controlla</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#download">Scarica</a>
+  </div>
+</header>
+
+<main id="contenuto">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Gratuito &middot; Portatile &middot; Windows 10 e 11</p>
+        <h1>Diagnostica Hardware</h1>
+        <p class="lead">Scopri in circa 10 minuti se un PC Windows ha problemi hardware, senza installare nulla e senza modificare il sistema.</p>
+        <p class="sub">Utile quando un PC si blocca, si riavvia o rallenta senza motivo, dopo una modifica all'hardware o per un controllo periodico.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#download">
+            <svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>
+            Scarica
+          </a>
+          <a class="btn btn-secondary" href="#come-funziona">Come funziona</a>
+        </div>
+        <p class="meta">Versione <span data-fill="version">1.0.0</span> &middot; ZIP <span data-fill="size">34,9 MB</span> &middot; <a href="#verifica">SHA-256 pubblicato</a></p>
+      </div>
+
+      <figure class="mock" aria-labelledby="mock-cap">
+        <div class="mock-window" role="img" aria-label="Illustrazione della finestra del programma: elenco di controlli raggruppati, ciascuno con un'etichetta colorata OK o ATTENZIONE">
+          <div class="mock-titlebar">
+            <span class="mock-title">Diagnostica Hardware</span>
+            <span class="mock-ctrls" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+          <div class="mock-banner">
+            <div>
+              <strong>Test rapido completato</strong>
+              <span>Test approfonditi in corso &middot; circa 6 min rimanenti</span>
+            </div>
+            <div class="mock-progress"><span></span></div>
+          </div>
+          <div class="mock-body" aria-hidden="true">
+            <p class="mock-group">Identit&agrave; componenti</p>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Processore</span><span class="mr-d">8 core / 16 thread &middot; 3,6 GHz</span></div>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Memoria RAM installata</span><span class="mr-d">32 GB &middot; 2 moduli</span></div>
+            <p class="mock-group">Storico errori</p>
+            <div class="mock-row"><span class="pill warn">ATTENZIONE</span><span class="mr-t">Spegnimenti anomali e schermate blu</span><span class="mr-d">2 spegnimenti anomali registrati</span></div>
+            <p class="mock-group">Dischi</p>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Salute dischi</span><span class="mr-d">SSD NVMe 1 TB &middot; nessun errore</span></div>
+            <p class="mock-group">CPU e raffreddamento</p>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Stabilit&agrave; di calcolo CPU</span><span class="mr-d">Risultati sempre corretti</span></div>
+            <p class="mock-group">Scheda video</p>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Test memoria video (VRAM)</span><span class="mr-d">Nessun errore</span></div>
+            <div class="mock-row"><span class="pill ok">OK</span><span class="mr-t">Stress grafico sotto carico</span><span class="mr-d">Stabile, nessun errore</span></div>
+            <div class="mock-row"><span class="pill run">IN CORSO</span><span class="mr-t">Carico massimo combinato</span><span class="mr-d">CPU, scheda video e RAM insieme</span></div>
+          </div>
+        </div>
+        <figcaption id="mock-cap">Illustrazione dell'interfaccia con valori di esempio, non un risultato reale.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ PRINCIPI ============ -->
+  <section class="facts" aria-label="Principi di funzionamento">
+    <div class="wrap facts-grid">
+      <div class="fact">
+        <svg class="ico-lg" aria-hidden="true"><use href="#i-usb"/></svg>
+        <div><h2>Nessuna installazione</h2><p>Un solo programma da avviare da chiavetta USB o da una cartella. Nessun driver.</p></div>
+      </div>
+      <div class="fact">
+        <svg class="ico-lg" aria-hidden="true"><use href="#i-eye"/></svg>
+        <div><h2>Sola lettura</h2><p>Legge e misura, non cambia impostazioni, registro o file del PC.</p></div>
+      </div>
+      <div class="fact">
+        <svg class="ico-lg" aria-hidden="true"><use href="#i-offline"/></svg>
+        <div><h2>Niente Internet</h2><p>Funziona completamente offline. Non contatta nessun server.</p></div>
+      </div>
+      <div class="fact">
+        <svg class="ico-lg" aria-hidden="true"><use href="#i-lock"/></svg>
+        <div><h2>Nessun dato raccolto</h2><p>Il report viene salvato solo accanto al programma, ad esempio sulla tua chiavetta.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FUNZIONI ============ -->
+  <section class="section" id="funzioni" aria-labelledby="h-funzioni">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Funzioni</p>
+        <h2 id="h-funzioni">Un controllo completo, in automatico</h2>
+        <p>Dopo la conferma di Windows i controlli partono da soli, uno dopo l'altro, e ogni riga si colora appena il risultato &egrave; pronto.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-chip"/></svg>
+          <h3>Identificazione componenti</h3>
+          <p>Processore, RAM, scheda video, scheda madre, BIOS e dischi. Facoltativamente, confronto con una configurazione di riferimento.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-history"/></svg>
+          <h3>Storico errori di Windows</h3>
+          <p>Errori hardware WHEA, spegnimenti anomali, schermate blu, file di crash, errori dei dischi e reset del driver video.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-disk"/></svg>
+          <h3>Salute e velocit&agrave; dei dischi</h3>
+          <p>Dati SMART di SSD, NVMe e dischi meccanici tramite smartmontools, breve autotest interno del disco e prova di velocit&agrave; in sola lettura.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-gauge"/></svg>
+          <h3>Processore sotto stress</h3>
+          <p>Calcoli a pieno carico con verifica dei risultati e controllo della frequenza, per scoprire instabilit&agrave; e surriscaldamento.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-ram"/></svg>
+          <h3>Memoria RAM</h3>
+          <p>Test di scrittura e rilettura su gran parte della memoria libera, configurazione dei canali e velocit&agrave;.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-gpu"/></svg>
+          <h3>Scheda video e VRAM</h3>
+          <p>Calcolo GPU con verifica, test della memoria video (memtest_vulkan), stress grafico con FurMark 2, temperature e ventole sotto carico.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-bolt"/></svg>
+          <h3>Alimentazione e stabilit&agrave;</h3>
+          <p>Carico combinato CPU, GPU e RAM e picchi di carico improvvisi (load-step): mettono alla prova l'alimentatore.</p>
+        </article>
+        <article class="card">
+          <svg class="ico-card" aria-hidden="true"><use href="#i-key"/></svg>
+          <h3>Controlli di propriet&agrave;</h3>
+          <p>BitLocker, PC aziendale o gestito, tipo di licenza Windows, compatibilit&agrave; con Windows 11 e numeri di serie.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COME FUNZIONA ============ -->
+  <section class="section alt" id="come-funziona" aria-labelledby="h-come">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Come funziona</p>
+        <h2 id="h-come">Quattro passaggi, circa 10 minuti</h2>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>Scarica ed estrai</h3>
+          <p>Estrai lo ZIP su una chiavetta USB (consigliato) o in una cartella.</p>
+        </li>
+        <li class="step">
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>Avvia e conferma</h3>
+          <p>Doppio clic su <code>Avvia Diagnostica.exe</code> e conferma la richiesta di Windows (Controllo account utente).</p>
+        </li>
+        <li class="step">
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>Test rapido, poi approfondito</h3>
+          <p>Dopo circa 3 minuti il test rapido &egrave; completo e il report &egrave; gi&agrave; salvato. I test approfonditi proseguono da soli, per un totale di circa 10 minuti.</p>
+        </li>
+        <li class="step">
+          <span class="step-n" aria-hidden="true">4</span>
+          <h3>Leggi il report</h3>
+          <p>Report HTML e TXT nella cartella <code>Report</code> accanto al programma, firmati con un &laquo;Codice di verifica&raquo; che rivela eventuali modifiche.</p>
+        </li>
+      </ol>
+      <p class="note">Puoi chiudere la finestra in qualsiasi momento: tutti i test si fermano in modo sicuro e restano validi i risultati gi&agrave; ottenuti.</p>
+    </div>
+  </section>
+
+  <!-- ============ COLORI ============ -->
+  <section class="section" id="risultati" aria-labelledby="h-risultati">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Risultati</p>
+        <h2 id="h-risultati">Come leggere i colori</h2>
+        <p>La regola principale: il rosso compare solo quando l'errore &egrave; certo. Nel dubbio il risultato resta giallo, con la spiegazione nel dettaglio della riga.</p>
+      </div>
+      <div class="legend">
+        <div class="legend-item">
+          <span class="pill ok">OK</span>
+          <p><strong>Nei limiti.</strong> Il controllo &egrave; stato eseguito e non ha trovato problemi.</p>
+        </div>
+        <div class="legend-item">
+          <span class="pill warn">ATTENZIONE</span>
+          <p><strong>Da approfondire.</strong> Qualcosa di insolito: errori passati nei registri, usura del disco, temperature alte, componente diverso da quello atteso.</p>
+        </div>
+        <div class="legend-item">
+          <span class="pill fail">GUASTO</span>
+          <p><strong>Errore certo.</strong> Ad esempio calcoli sbagliati della CPU, errori di memoria confermati con rilettura, disco che segnala guasto, crash durante il test.</p>
+        </div>
+        <div class="legend-item">
+          <span class="pill na">N.D.</span>
+          <p><strong>Non disponibile.</strong> Il dato non &egrave; leggibile su questo PC o lo strumento necessario manca. Non &egrave; mai un giudizio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COSA CONTROLLA ============ -->
+  <section class="section alt" id="controlli" aria-labelledby="h-controlli">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Dettaglio</p>
+        <h2 id="h-controlli">Cosa controlla</h2>
+        <p>L'elenco completo dei controlli, raggruppati come nella finestra del programma.</p>
+      </div>
+      <div class="checks">
+        <section class="check-group" aria-labelledby="cg1">
+          <h3 id="cg1"><svg class="ico" aria-hidden="true"><use href="#i-chip"/></svg>Identit&agrave; componenti</h3>
+          <ul>
+            <li>Processore: modello, core, thread, frequenza</li>
+            <li>RAM installata: capacit&agrave; e moduli</li>
+            <li>Scheda video e memoria video</li>
+            <li>Scheda madre e versione del BIOS</li>
+            <li>Dischi interni: tipo, collegamento e capacit&agrave;</li>
+            <li>Numeri di serie, da confrontare con documenti o scatola</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg2">
+          <h3 id="cg2"><svg class="ico" aria-hidden="true"><use href="#i-history"/></svg>Storico errori</h3>
+          <ul>
+            <li>Copertura dei registri (registri svuotati o Windows appena reinstallato)</li>
+            <li>Errori hardware registrati (WHEA)</li>
+            <li>Spegnimenti anomali e schermate blu</li>
+            <li>Errori dei dischi e reset del driver video</li>
+            <li>File di crash (minidump) e indice di affidabilit&agrave; di Windows</li>
+            <li>Esiti della Diagnostica memoria di Windows, se eseguita in passato</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg3">
+          <h3 id="cg3"><svg class="ico" aria-hidden="true"><use href="#i-disk"/></svg>Dischi</h3>
+          <ul>
+            <li>Stato SMART di SSD SATA, NVMe e dischi meccanici</li>
+            <li>Settori riallocati, in attesa o non correggibili</li>
+            <li>Usura e spazio di riserva degli SSD NVMe</li>
+            <li>Breve autotest SMART eseguito dal disco stesso, senza scrivere dati, e registro degli autotest precedenti</li>
+            <li>Velocit&agrave; di lettura sequenziale e, sui dischi meccanici, tempi di accesso</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg4">
+          <h3 id="cg4"><svg class="ico" aria-hidden="true"><use href="#i-gauge"/></svg>CPU e raffreddamento</h3>
+          <ul>
+            <li>Stress su tutti i thread con confronto dei risultati con valori di riferimento</li>
+            <li>Frequenza mantenuta sotto carico, come indicatore di surriscaldamento</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg5">
+          <h3 id="cg5"><svg class="ico" aria-hidden="true"><use href="#i-ram"/></svg>Memoria RAM</h3>
+          <ul>
+            <li>Test errori con schemi di scrittura e rilettura su gran parte della memoria libera</li>
+            <li>Ogni errore viene riletto pi&ugrave; volte prima di essere segnalato</li>
+            <li>Configurazione: canali, velocit&agrave;, profilo di frequenza</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg6">
+          <h3 id="cg6"><svg class="ico" aria-hidden="true"><use href="#i-gpu"/></svg>Scheda video</h3>
+          <ul>
+            <li>Driver e stato della scheda, errori in Gestione dispositivi</li>
+            <li>Calcolo GPU (OpenCL) con verifica dei risultati</li>
+            <li>Test della memoria video con memtest_vulkan</li>
+            <li>Stress grafico con FurMark 2</li>
+            <li>Temperatura del chip, hot-spot e memoria video, ventole, limitazioni e collegamento PCIe sotto carico <span class="tag">schede NVIDIA</span></li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg7">
+          <h3 id="cg7"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg>Alimentazione e stabilit&agrave;</h3>
+          <ul>
+            <li>Carico massimo combinato CPU + GPU + RAM</li>
+            <li>Picchi di carico improvvisi, che mettono in difficolt&agrave; gli alimentatori deboli</li>
+            <li>Nuovi errori hardware comparsi durante il test</li>
+            <li>Rilevamento di un test precedente interrotto da spegnimento o riavvio</li>
+          </ul>
+        </section>
+        <section class="check-group" aria-labelledby="cg8">
+          <h3 id="cg8"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Sistema e propriet&agrave;</h3>
+          <ul>
+            <li>Versione e attivazione di Windows, tipo di licenza</li>
+            <li>Crittografia BitLocker</li>
+            <li>PC aziendale o gestito (dominio, MDM)</li>
+            <li>Compatibilit&agrave; con Windows 11</li>
+            <li>Gestione dispositivi, schede di rete, piano energetico, ultimo riavvio</li>
+          </ul>
+        </section>
+      </div>
+      <p class="note">Al termine il programma elenca anche i controlli da fare a mano, che nessun software pu&ograve; sostituire: porte USB e audio, uscite video, ventole, odori di bruciato, etichetta dell'alimentatore, polvere.</p>
+    </div>
+  </section>
+
+  <!-- ============ COSA NON FA ============ -->
+  <section class="section" id="non-fa" aria-labelledby="h-nonfa">
+    <div class="wrap two-col">
+      <div class="section-head left">
+        <p class="kicker">Trasparenza</p>
+        <h2 id="h-nonfa">Cosa non fa</h2>
+        <p>Sapere cosa un programma non fa &egrave; importante quanto sapere cosa fa, soprattutto per uno strumento che chiede i diritti di amministratore.</p>
+      </div>
+      <ul class="nolist">
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non installa nulla.</strong> Nessun servizio, nessun driver, nessuna voce nel menu Start. Report e log vengono scritti solo nella cartella del programma, quindi sulla chiavetta se lo avvii da l&igrave;.</div></li>
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non modifica il sistema.</strong> Non cambia impostazioni, piano energetico, registro o file. Sul disco del PC legge soltanto: la prova di velocit&agrave; &egrave; in sola lettura e l'autotest viene eseguito dal disco stesso, senza scrivere dati. Durante il test impedisce solo la sospensione automatica, che torna normale alla chiusura.</div></li>
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non si collega a Internet.</strong> Nessun aggiornamento automatico, nessuna statistica, nessun invio di dati.</div></li>
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non legge i dati personali.</strong> Non apre documenti, foto, cronologia o elenco dei programmi installati: solo hardware e registri di sistema.</div></li>
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non misura la temperatura della CPU.</strong> Servirebbe un driver: al suo posto controlla la frequenza mantenuta sotto carico.</div></li>
+        <li><svg class="ico x" aria-hidden="true"><use href="#i-x"/></svg><div><strong>Non ripara e non promette.</strong> Trova guasti evidenti e punti da approfondire. Non pu&ograve; escludere problemi intermittenti che compaiono solo dopo ore e non testa la parte di RAM usata da Windows.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ DOWNLOAD ============ -->
+  <section class="section alt" id="download" aria-labelledby="h-download">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Download</p>
+        <h2 id="h-download">Scarica Diagnostica Hardware</h2>
+        <p>Gratuito. Un unico archivio ZIP, da estrarre prima dell'uso.</p>
+      </div>
+
+      <div class="dl-grid">
+        <div class="dl-card">
+          <div class="dl-file">
+            <svg class="ico-lg" aria-hidden="true"><use href="#i-doc"/></svg>
+            <div>
+              <p class="dl-name">DiagnosticaHardware.zip</p>
+              <p class="dl-meta">Versione <span data-fill="version">1.0.0</span> &middot; <span data-fill="size">34,9 MB</span> &middot; <time data-fill="date" datetime="2026-10-16">16 ottobre 2026</time></p>
+            </div>
+          </div>
+          <a class="btn btn-primary btn-block" href="download/DiagnosticaHardware.zip" download>
+            <svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>
+            Scarica lo ZIP
+          </a>
+
+          <div class="hash" id="verifica">
+            <p class="hash-label">SHA-256 dello ZIP</p>
+            <div class="hash-row">
+              <code class="hash-val" id="sha-zip" data-fill="sha256">606916CDFE562FC58C73997EAE59CBE95CBBF51F44EC4642C038ED00F9CEDD49</code>
+              <button class="copy" type="button" data-copy="sha-zip" hidden>
+                <svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copia</span>
+              </button>
+            </div>
+            <p class="hash-label">SHA-256 di Avvia Diagnostica.exe</p>
+            <div class="hash-row">
+              <code class="hash-val" id="sha-exe" data-fill="exe-sha256">03F1E24A9C90D536A1C6FA41FB395341D3ABB2A37B36E27A6C44A91B76878105</code>
+              <button class="copy" type="button" data-copy="sha-exe" hidden>
+                <svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span>Copia</span>
+              </button>
+            </div>
+            <p class="hash-help">Per controllare che il file scaricato sia integro, apri PowerShell nella cartella del download e confronta il risultato con il codice qui sopra:</p>
+            <pre class="cmd"><code>Get-FileHash .\DiagnosticaHardware.zip</code></pre>
+            <p class="hash-help">Gli stessi codici sono anche in <a href="download/SHA256.txt">SHA256.txt</a>.</p>
+          </div>
+        </div>
+
+        <div class="dl-side">
+          <div class="panel">
+            <h3>Requisiti</h3>
+            <ul class="ticks">
+              <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Windows 10 o Windows 11, 64 bit</li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>.NET Framework 4.8, gi&agrave; incluso in Windows 10 (dalla versione 1903) e Windows 11</li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Account con diritti di amministratore</li>
+              <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Chiavetta USB (facoltativa, consigliata): bastano 150 MB liberi, FurMark compreso</li>
+            </ul>
+          </div>
+          <div class="panel panel-accent">
+            <h3>FurMark 2</h3>
+            <p>FurMark 2 di Geeks3D &egrave; incluso senza modifiche, come consentito dalla sua licenza. Pagina ufficiale: <a href="https://www.geeks3d.com/furmark/" rel="noopener noreferrer">geeks3d.com/furmark</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg">
+        <h3>Contenuto dello ZIP</h3>
+        <ul class="tree">
+          <li><code>Avvia Diagnostica.exe</code><span>il programma</span></li>
+          <li><code>config.ini</code><span>componenti attesi, facoltativo (vuoto: nessun confronto)</span></li>
+          <li><code>LEGGIMI.txt</code><span>istruzioni brevi</span></li>
+          <li><code>tools\smartctl\</code><span>smartmontools 7.5</span></li>
+          <li><code>tools\memtest_vulkan\</code><span>memtest_vulkan 0.5.0</span></li>
+          <li><code>tools\furmark\</code><span>FurMark 2 (Geeks3D), non modificato</span></li>
+          <li><code>LICENZE\</code><span>licenze dei componenti di terze parti</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LICENZE ============ -->
+  <section class="section" id="licenze" aria-labelledby="h-licenze">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Componenti di terze parti</p>
+        <h2 id="h-licenze">Strumenti usati e licenze</h2>
+        <p>Per alcune misure il programma avvia strumenti esterni noti e diffusi, inclusi senza modifiche. Ognuno mantiene la propria licenza.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="lic">
+          <caption class="sr-only">Componenti di terze parti, uso e licenza</caption>
+          <thead>
+            <tr><th scope="col">Componente</th><th scope="col">A cosa serve</th><th scope="col">Licenza</th><th scope="col">Nello ZIP</th><th scope="col">Link</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">smartmontools 7.5<br><span class="muted">smartctl.exe, drivedb.h</span></th>
+              <td data-label="Uso">Lettura dei dati SMART dei dischi</td>
+              <td data-label="Licenza">GPLv2</td>
+              <td data-label="Nello ZIP"><span class="yes">S&igrave;</span></td>
+              <td class="links">
+                <a href="https://github.com/smartmontools/smartmontools" rel="noopener noreferrer">Progetto</a>
+                <a href="https://github.com/smartmontools/smartmontools/releases/tag/RELEASE_7_5" rel="noopener noreferrer">Sorgente 7.5</a>
+                <a href="licenze/smartmontools-COPYING.txt">Testo GPLv2</a>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">memtest_vulkan 0.5.0</th>
+              <td data-label="Uso">Test della memoria video tramite Vulkan</td>
+              <td data-label="Licenza">zlib</td>
+              <td data-label="Nello ZIP"><span class="yes">S&igrave;</span></td>
+              <td class="links">
+                <a href="https://github.com/GpuZelenograd/memtest_vulkan" rel="noopener noreferrer">Progetto</a>
+                <a href="licenze/memtest_vulkan-LICENSE.txt">Licenza</a>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">FurMark 2<br><span class="muted">di Geeks3D</span></th>
+              <td data-label="Uso">Stress grafico della scheda video</td>
+              <td data-label="Licenza">Freeware, ridistribuzione consentita con link alla pagina ufficiale (EULA incluso)</td>
+              <td data-label="Nello ZIP"><span class="yes">S&igrave;</span></td>
+              <td class="links">
+                <a href="https://www.geeks3d.com/furmark/" rel="noopener noreferrer">Sito ufficiale</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Usati solo se gi&agrave; presenti nel PC, mai inclusi: <code>nvidia-smi</code> (fornito con il driver NVIDIA) per i sensori della scheda video, i driver OpenCL e Vulkan della scheda video, e i componenti standard di Windows (.NET Framework, WMI, Registro eventi).</p>
+    </div>
+  </section>
+
+  <!-- ============ PRIVACY ============ -->
+  <section class="section alt" id="privacy" aria-labelledby="h-privacy">
+    <div class="wrap two-col">
+      <div class="section-head left">
+        <p class="kicker">Privacy</p>
+        <h2 id="h-privacy">I dati restano tuoi</h2>
+      </div>
+      <div class="prose">
+        <h3>Il programma</h3>
+        <p>Non raccoglie e non invia dati: non contiene codice di rete e funziona senza connessione. Il report viene scritto solo nella cartella <code>Report</code> accanto al programma: se lo avvii da una chiavetta, resta sulla chiavetta.</p>
+        <p>Il report contiene informazioni tecniche sul PC analizzato: modelli dei componenti, numeri di serie, nome del computer, stato di licenza e BitLocker, eventi di sistema. Se lo condividi, ricorda che contiene questi dati.</p>
+        <h3>Questo sito</h3>
+        <p>Non usa cookie, non usa strumenti di analisi o tracciamento e non carica font, script o immagini da altri siti. Il servizio che ospita le pagine pu&ograve; registrare dati tecnici di accesso, come l'indirizzo IP, nei propri log.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section" id="faq" aria-labelledby="h-faq">
+    <div class="wrap narrow">
+      <div class="section-head">
+        <p class="kicker">Domande frequenti</p>
+        <h2 id="h-faq">FAQ</h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>Perch&eacute; Windows chiede la conferma (Controllo account utente)?</summary>
+          <div class="faq-a">
+            <p>Il programma richiede i diritti di amministratore. Senza, Windows non permette di leggere i dati SMART dei dischi, i registri degli errori hardware, lo stato di BitLocker e alcuni sensori. I diritti servono solo per leggere: il programma non modifica il sistema.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Windows SmartScreen o l'antivirus mostrano un avviso. &Egrave; normale?</summary>
+          <div class="faq-a">
+            <p>Pu&ograve; succedere, e conviene spiegare perch&eacute;. Il programma non &egrave; firmato con un certificato digitale a pagamento ed &egrave; scaricato da poche persone: SmartScreen mostra quindi &laquo;Windows ha protetto il PC&raquo; per qualsiasi file nuovo di questo tipo. Inoltre un programma che chiede i diritti di amministratore e mette sotto sforzo CPU e GPU pu&ograve; insospettire i controlli automatici di alcuni antivirus.</p>
+            <p>Cosa fare:</p>
+            <ul>
+              <li>scarica lo ZIP solo da questa pagina e confronta il suo <a href="#verifica">SHA-256</a>;</li>
+              <li>se il codice coincide, in SmartScreen scegli &laquo;Ulteriori informazioni&raquo; e poi &laquo;Esegui comunque&raquo;;</li>
+              <li>se vuoi un secondo parere puoi analizzare tu stesso il file con un servizio di scansione online multi-antivirus;</li>
+              <li>non disattivare l'antivirus: se blocca il programma su un PC, non usarlo su quel PC.</li>
+            </ul>
+            <p>Con &laquo;Smart App Control&raquo; attivo (Windows 11) i programmi non firmati possono essere bloccati del tutto.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Quanto dura?</summary>
+          <div class="faq-a">
+            <p>Circa 10 minuti in totale. Il test rapido dura circa 3 minuti e al termine il report &egrave; gi&agrave; salvato; i test approfonditi continuano da soli fino al termine. Se un controllo d&agrave; un risultato sospetto, il programma pu&ograve; aggiungere una breve verifica supplementare. Puoi interrompere in qualsiasi momento.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Cosa significano i colori?</summary>
+          <div class="faq-a">
+            <p><span class="pill ok">OK</span> nei limiti; <span class="pill warn">ATTENZIONE</span> qualcosa da approfondire; <span class="pill fail">GUASTO</span> errore certo; <span class="pill na">N.D.</span> dato non disponibile. Il rosso &egrave; riservato ai guasti certi, per evitare falsi allarmi: un test ripetuto pu&ograve; confermare un problema, mai cancellarlo. Ogni riga ha un dettaglio che spiega il risultato.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Come verifico che un report non sia stato modificato?</summary>
+          <div class="faq-a">
+            <p>Ogni report &egrave; firmato e riporta un <strong>Codice di verifica</strong>. Trascina il file <code>report.html</code> o <code>report.txt</code> sopra <code>Avvia Diagnostica.exe</code>: comparir&agrave; &laquo;Report integro&raquo; con il codice e la data, oppure &laquo;Report MODIFICATO o non valido&raquo;. La verifica non avvia la diagnostica.</p>
+            <p>&Egrave; utile, ad esempio, quando ricevi un report da un'altra persona o da un tecnico: puoi verificarlo con la tua copia del programma. Il codice rileva modifiche fatte al file, ma non &egrave; una firma digitale con certificato.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Pu&ograve; danneggiare il PC?</summary>
+          <div class="faq-a">
+            <p>Gli stress test impegnano CPU, GPU e alimentatore come un videogioco pesante o un benchmark, per pochi minuti. Un PC sano li regge senza problemi. Un PC con un difetto (alimentatore debole, raffreddamento insufficiente) pu&ograve; bloccarsi o spegnersi: &egrave; proprio ci&ograve; che il test deve far emergere, e il programma lo rileva al riavvio successivo. Sui portatili collega l'alimentatore.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Funziona con schede video AMD o Intel?</summary>
+          <div class="faq-a">
+            <p>S&igrave; per l'identificazione, lo storico errori, il calcolo GPU (OpenCL) e il test della memoria video (Vulkan), se il driver li supporta. Le letture dettagliate sotto carico (temperature di chip, hot-spot e memoria, ventole, limitazioni, collegamento PCIe) oggi sono disponibili solo sulle schede NVIDIA: sulle altre quelle righe risultano N.D.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Serve una connessione a Internet?</summary>
+          <div class="faq-a">
+            <p>No. Il programma funziona completamente offline e non contatta nessun server, n&eacute; per aggiornamenti n&eacute; per statistiche.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>Posso usarlo su un PC di lavoro o di un'altra persona?</summary>
+          <div class="faq-a">
+            <p>S&igrave;, con il permesso di chi gestisce il PC. Il programma non installa e non modifica nulla e, se avviato da chiavetta, salva il report solo sulla chiavetta. Serve un account amministratore per confermare l'avvio; sui PC aziendali possono valere regole interne che ne vietano l'uso.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>A cosa serve config.ini?</summary>
+          <div class="faq-a">
+            <p>&Egrave; facoltativo. Puoi scriverci i componenti attesi (ad esempio quelli della fattura o della scheda tecnica: modello di CPU e GPU, RAM, dischi). Un componente diverso da quello atteso viene segnalato in giallo, mai in rosso. Nel pacchetto &egrave; vuoto: il programma mostra solo i componenti rilevati, senza confronti.</p>
+          </div>
+        </details>
+
+        <details>
+          <summary>FurMark &egrave; incluso?</summary>
+          <div class="faq-a">
+            <p>S&igrave;. FurMark 2 di Geeks3D &egrave; incluso senza modifiche nella cartella <code>tools\furmark\FurMark_win64\</code>, come consentito dalla sua licenza: il testo completo &egrave; nel file <code>EULA.txt</code> nella stessa cartella. Pagina ufficiale: <a href="https://www.geeks3d.com/furmark/" rel="noopener noreferrer">geeks3d.com/furmark</a>.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="brand brand-foot">
+        <svg class="brand-mark" aria-hidden="true"><use href="#i-logo"/></svg>
+        <span>Diagnostica Hardware</span>
+      </p>
+      <p class="small">Versione <span data-fill="version">1.0.0</span> &middot; pubblicata il <span data-fill="date">16 ottobre 2026</span></p>
+    </div>
+    <div class="small foot-text">
+      <p>Software gratuito, fornito &laquo;cos&igrave; com'&egrave;&raquo;, senza garanzia di alcun tipo. I componenti di terze parti sono distribuiti secondo le rispettive licenze, indicate nella sezione <a href="#licenze">Strumenti usati e licenze</a> e nella cartella <code>LICENZE</code> dello ZIP.</p>
+      <p>Windows, NVIDIA, FurMark e gli altri nomi citati sono marchi dei rispettivi proprietari. Questo progetto non &egrave; affiliato n&eacute; approvato da loro.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
